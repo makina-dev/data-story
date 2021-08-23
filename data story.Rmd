@@ -1,0 +1,210 @@
+---
+title: "Untitled"
+author: "     "
+date: "7/15/2021"
+output: html_document
+---
+                              DATA STORY
+
+
+INTRODUCTION
+
+
+
+
+
+According to the data set we have from the guardian , there is a significant increase in police killings among our citizens in our states. Police brutality is being experienced in the US especially on blacks. Clearly we’ve experienced different cases of death by the police , mostly by gunshots. Power misuse is on the rise since the death rates caused by the police is on the rise. Using this data set provided, we will clean the data for visualization purposes and create a machine learning model that will give us a hand on solving this problem.
+
+DATA SET
+
+
+
+We are provided with a data set called the-counted-2015 from the Guardian. The data is a csv file , it is  dataframe consisting of 1146 rows and 14 columns. We will be using this data to solve the problem
+
+
+
+•	Important field and information
+
+
+
+
+From the data , we have 14 columns. The columns play an important role since we will be using the provided information to solve the problem at hand. The fourteen columns are; uid, name, age, gender, raceethnicity, month, day, year, streetaddress, city, state, classification, lawenforcementagency, armed.
+From the above 14 columns there are important fields that we will consider during visualizations and statistical analysis  which will help us to solve the problem. The important fields include the following columns     
+1.	Uid
+2.	Age
+3.	Gender
+4.	Raceethnicity
+5.	State
+6.	Classification   
+ 
+•	Limitations
+
+From the data provided we don’t have some answers to some questions. The following are some of the unanswered questions 
+1.	We are not told the crime committed by the victims. 
+2.	Also there is no column specifying the officer who killed 
+3.	The action taken against the officer who killed also isn’t specified. 
+4.	Reasoning of the officer who killed
+5.	The reason for the action taken against the victim. 
+
+
+
+•	CLEANING AND WRANGLING
+
+
+
+Column renaming: as we explore the data we get long descriptive column names, since we want precise and short column names we rename the columns to give it a better meaning
+
+Checking for missing values: in this step , we check for missing values in each column 
+
+Omitting the missing values: using the R command na.omit , we remove the missing values
+
+Changing the age column in to a number : since age is a number not a character , we have to change it in to a number
+
+Looking for outliers: we use a boxplot to check for outliers which they exist on the boxplot concerning age. We can try omit the outliers for better visualization and results
+
+View the clean data for further cleaning: we view the cleaned data to see if we can do more. Since the data Is ready and clean we stop here
+
+
+EXPLORATORY DATA ANALYSIS AND SOME IMPORTANT VISUALIZATIONS
+
+
+setting working directory
+
+```{r}
+setwd("C:/project 001")
+library(readr)
+the_counted_2015= read_csv("the-counted-2015.csv")
+
+```
+
+
+importing libraries
+```{r}
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+```
+
+data cleaning
+
+```{r}
+glimpse(the_counted_2015)
+names(the_counted_2015)
+dim(the_counted_2015)
+names(the_counted_2015)[5]= "race"
+names(the_counted_2015)[9]= "adress"
+names(the_counted_2015)[12]="cause_of_death"
+names(the_counted_2015)[13]="jurisdiction"
+names(the_counted_2015)[1]= "id"
+names(the_counted_2015)
+sum(is.na(the_counted_2015$id))
+sum(is.na(the_counted_2015$name))
+sum(is.na(the_counted_2015$age))
+sum(is.na(the_counted_2015$gender))
+sum(is.na(the_counted_2015$race))
+sum(is.na(the_counted_2015$month))
+sum(is.na(the_counted_2015$day))
+sum(is.na(the_counted_2015$year))
+sum(is.na(the_counted_2015$adress))
+sum(is.na(the_counted_2015$city))
+sum(is.na(the_counted_2015$state))
+sum(is.na(the_counted_2015$cause_of_death))
+sum(is.na(the_counted_2015$jurisdiction))
+sum(is.na(the_counted_2015$armed))
+my_data_new=na.omit(the_counted_2015)
+names(my_data_new)
+my_data_new= my_data_new %>% mutate(age=as.numeric(age))
+str(my_data_new)
+
+```
+
+
+CHANGING CHARACTERS TO FACTORS FOR SOME ANALYSIS
+```{r}
+my_data_new=my_data_new %>% mutate(gender=factor(gender), cause_of_death=factor(cause_of_death),state=factor(state), cause_of_death=factor(cause_of_death))
+glimpse(my_data_new)
+```
+
+DEATH RATES BY POLICE ACCORDING TO GENDER 
+
+```{r}
+my_data_new %>% ggplot(aes(gender)) + geom_bar()+theme_bw() +labs(title = "Death rates by police according to gender")
+```
+ 
+from the above we clearly see that most affected gender is male. males are the most victims in the police kiling
+ 
+ 
+ DEATH RATES BY POLICE ACCORDING TO RACE
+ 
+```{r}
+my_data_new %>% ggplot(aes(race)) + geom_bar()+theme_bw() +labs(title = "Death rates by police according to race")
+```
+
+clearly we can see that the most affected origin is the whites, followed by blacks ,then latinos as the others preceed
+ 
+ 
+ DEATH RATES BY POLICE ACCORDING TO CAUSE_OF_DEATH
+ 
+```{r}
+my_data_new %>% ggplot(aes(cause_of_death)) + geom_bar()+theme_bw() +labs(title = "Death rates by police according to cause_of_death")
+```
+
+from the plot above we can conclude that most of the police killings is by gunshots , followed by teasers, others died in custody and others struck by a vehicle
+
+
+ DEATH RATES BY POLICE ACCORDING TO AGE
+ 
+```{r}
+my_data_new %>% ggplot(aes(age)) + geom_histogram(binwidth = 5)+theme_bw() +labs(title = "Death rates by police according to age")
+```
+
+we can see that the most affected age is beetween 25-50
+
+
+ DEATH RATES BY POLICE ACCORDING TO STATES
+ 
+```{r}
+my_data_new %>% ggplot(aes(state)) + geom_bar()+theme_bw() +labs(title = "Death rates by police according to states")
+```
+
+the most affected states are; california,texas,florida, arizona,georgia,ohio, oklahoma ,as the others preceed
+ 
+PROPORTION OF GENDER
+
+```{r}
+ prop.table(table(my_data_new$gender))
+```
+ 
+we clearly see that a bigger proportion is on males signifying that a bigger percentage of the victims are male
+ 
+PROPORTION ACCORDING TO ORIGIN
+
+```{r}
+prop.table(table(my_data_new$origin))
+```
+
+the whites are the most affected followed by blacks and latinos. The bigger proportion lies with the whites
+
+
+CHECKING FOR OUTLIERS USING BOXPLOTS
+
+```{r}
+boxplot(my_data_new$age)
+boxplot(my_data_new$id)
+boxplot(my_data_new$day)
+```
+
+clearly there are some outliers with the age variale
+
+
+
+
+CONCLUSION
+
+
+we are going to train a machine learning model that will predict the future so as to try and minimize the police killings
+
+
+in our hypothesis we stated that blacks are the most affected origin . But from our findings we can clearly conclude that whites are most affected 
+
+ 
